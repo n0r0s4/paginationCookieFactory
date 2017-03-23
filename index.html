@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html ng-app="hotelbApp" xmlns="http://www.w3.org/1999/xhtml" xml:lang="es" lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <title>My games Management</title>
+  <link rel="shortcut icon" HREF="images/hotel.jpg"/>
+
+  <!-- css-->
+  <link rel="stylesheet" type="text/css" href="vendors/bootstrap/css/bootstrap.min.css" />
+  <link rel="stylesheet" type="text/css" href="css/index.css" />
+  <!-- jQuery-->
+  <script src="vendors/jquery/js/jQuery.js" type="text/javascript" xml:space="preserve"></script>
+
+  <!-- jQuery Cookies management-->
+  <script src="vendors/jquery/jquery-cookie/jquery.cookie.js" type="text/javascript" xml:space="preserve"></script>
+
+  <!-- Angular-->
+  <script src="vendors/angular/js/angular.min.js" type="text/javascript" xml:space="preserve"></script>
+  <script src="vendors/angular/js/angular-file-upload.js" type="text/javascript" xml:space="preserve"></script>
+  <script src="vendors/angular/js/angular-i18n/angular-locale_es-es.js" type="text/javascript" xml:space="preserve"></script>
+  <script src="vendors/angular/js/ng-currency.js" type="text/javascript" xml:space="preserve"></script>
+  <script src="vendors/angular/js/angular-cookies.js" type="text/javascript" xml:space="preserve"></script>
+  <script src="vendors/angular/js/dirPagination.js" type="text/javascript" xml:space="preserve"></script>
+  <script src="vendors/bootstrap/js/ui-bootstrap-tpls-2.3.1.js" type="text/javascript" xml:space="preserve"></script>
+
+  <!--  Own code-->
+  <!--  model-->
+  <script src="js/model/Game.object.js" type="text/javascript" xml:space="preserve"></script>
+  <script src="js/model/User.object.js" type="text/javascript" xml:space="preserve"></script>
+  <!--  control-->
+  <script src="js/app.js" type="text/javascript" xml:space="preserve"></script>
+  <script src="js/controller/hotelReservationCtrl.js" type="text/javascript" xml:space="preserve"></script>
+  <script src="js/controller/reviewsCtrl.js" type="text/javascript" xml:space="preserve"></script>
+
+</head>
+
+<body class="container">
+  <div id="mainMenu" ng-controller="mainController as mainCtrl" ng-init="start();">
+
+<!-- master login -->
+    <div class="row" ng-show="showActionMaster==0">
+      			<div class="col-sm-6 col-md-4 col-md-offset-4">
+      				<div class="panel panel-default">
+      					<div class="panel-heading">
+      						<strong> Sign in to continue</strong>
+      					</div>
+      					<div class="panel-body">
+      						<form role="form" action="#" method="POST">
+      							<fieldset>
+      								<div class="row">
+      									<div class="center-block">
+      										<img class="img-responsive" style="margin: 0 auto;"
+      											src="https://lh5.googleusercontent.com/-b0-k99FZlyE/AAAAAAAAAAI/AAAAAAAAAAA/eu7opA4byxI/photo.jpg?sz=120" alt="">
+      									</div>
+      								</div>
+      								<div class="row">
+      									<div class="col-sm-12 col-md-10  col-md-offset-1 ">
+      										<div class="form-group">
+      											<div class="input-group">
+      												<span class="input-group-addon">
+      													<i class="glyphicon glyphicon-user"></i>
+      												</span>
+      												<input class="form-control" placeholder="Username" ng-model="nameLogin" name="loginname" type="text" autofocus>
+      											</div>
+      										</div>
+      										<div class="form-group">
+      											<div class="input-group">
+      												<span class="input-group-addon">
+      													<i class="glyphicon glyphicon-lock"></i>
+      												</span>
+      												<input class="form-control" placeholder="Password" ng-model="passwordLogin" name="password" type="password" value="">
+      											</div>
+      										</div>
+      										<div class="form-group">
+      											<input ng-click="validate();" class="btn btn-lg btn-primary btn-block" value="Sign in">
+      										</div>
+      									</div>
+      								</div>
+      							</fieldset>
+      						</form>
+                  <div ng-show="error" class="alert alert-danger">
+                    <strong>Invalid user and/or password</strong>
+                  </div>
+      					</div>
+              </div>
+              <div class="form-group">
+                <a href="#diagram" ng-click="diagram=1" class="btn btn-info btn-block">See diagram</a>
+              </div>
+      			</div>
+
+            <div ng-show="diagram==1" class="center-block">
+              <img id="diagram" class="img-responsive" style="margin: 0 auto;"
+              src="images/toInsert.PNG">
+              <div class="form-group">
+                <a ng-click="diagram=0" class="btn btn-danger btn-block">Hide diagram</a>
+              </div>
+            </div>
+      </div>
+
+<!-- 77 when pseudologin is correct-->
+    <div ng-show="showActionMaster==77">
+    <h2>We trust you have received the usual lecture from the Games Administrator. It usually boils down to these three things:</h2><br>
+    <p>#1) Respect the privacy of others.</p>
+    <p>#2) Think before you type.</p>
+    <p>#3) With great power comes great responsibility.</p>
+    <p>#4) Don't foget to <a href="#" ng-click="logout();">LOGOUT</a> before you go!</p>
+<br><br>
+    <div id="mainOptions" class="form-horizontal">
+      <a href="#" ng-click="showAction=1">Games Administration</a>
+      <span>  --  </span>
+      <a href="#" ng-click="showAction=2">Users Administration</a>
+    </div>
+    <div id="reservation" class="form-horizontal" ng-show="showAction==1" ng-controller="hotelReservation as hotelResCtrl">
+      <hotel-reservation-form ng-init="init()"></hotel-reservation-form>
+    </div>
+    <div id="reviews" class="form-horizontal" ng-show="showAction==2" ng-controller="hotelReviewsMng as reviewsCtrl">
+      <hotel-reviews-form ng-init="init()"></hotel-reviews-form>
+    </div>
+  </div>
+  </div>
+  <div id="bottom"></id>
+</body>
+
+</html>

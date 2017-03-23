@@ -1,0 +1,162 @@
+<div class="container well">
+  <div class="row">
+    <div class="col-lg-10">
+      <div>
+        <h1>Users <small>you are currently in user's management page</small></h1>
+        <br>
+        <div class="row">
+          <div class="col-sm-4">
+            <label for="search">Search by DNI:</label>
+            <input ng-model="mailSearch" id="search" class="form-control"
+            placeholder="Filter text" ng-disabled="reviewsManagement.$invalid">
+          </div>
+          <div class="col-sm-4">
+            <label for="search">Search by name:</label>
+            <input ng-model="opinionSearch" id="search" class="form-control"
+            placeholder="Filter text" ng-disabled="reviewsManagement.$invalid">
+          </div>
+          <div class="col-sm-4">
+            <label for="search">items per page:</label>
+            <input type="number" min="1" max="100" class="form-control"
+            ng-model="pageSize" ng-disabled="reviewsManagement.$invalid">
+          </div>
+        </div>
+        <br>
+        <form class="login2" name="reviewsManagement"
+        ng-submit="reviewsManagement.$valid && reviewsCtrl.sendReviews()" novalidate>
+          <div class="panel panel-default">
+            <div class="row">
+              <div class="col-sm-2">
+                <label>DNI:</label>
+              </div>
+              <div class="col-sm-3">
+                <label for="search">Username:</label>
+              </div>
+              <div class="col-sm-3">
+                <label for="search">Email</label>
+              </div>
+            </div>
+            <!-- unnecessary ng-patterns by the way usefull for exam template :) -->
+            <div class="row" dir-paginate="review in filteredData | itemsPerPage: pageSize"
+                  current-page="currentPage">
+              <div class="col-sm-2">
+                <input type="text" class="form-control" id="rate{{$index}}"
+                ng-model="review.dni" readonly />
+              </div>
+              <div class="col-sm-3">
+                <input type="text" class="form-control" id="opinion{{$index}}"
+                ng-model="review.firstname" readonly />
+              </div>
+              <div class="col-sm-3">
+                <input type="email" class="form-control"
+                ng-pattern="/^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/" id="email{{$index}}"
+                ng-model="review.email" readonly />
+              </div>
+              <div class="col-sm-2">
+              <a href="#bottom" type="submit" ng-click="updateStudent(review)"
+                ng-disabled="miniaction==1" class="btn btn-success">
+                  Modify
+                </a>
+              </div>
+              <div class="col-sm-2">
+                <button type="submit" ng-click="removeStudent(review)"
+                ng-disabled="miniaction!==0" class="btn btn-danger">
+                  Remove
+                </button>
+              </div>
+            </div>
+            </div>
+          </div>
+          <div class="text-left" boundary-links="true" ng-show="reviewsManagement.$valid">
+            <dir-pagination-controls boundary-links="true"
+            template-url="view/templates/dir-pagination-controls.html" ></dir-pagination-controls>
+          </div>
+              <a href="#bottom"><button type="submit" ng-disabled="miniaction==2"
+              ng-click="miniaction=1" class="btn btn-default btn-primary btn-block">
+                Add
+              </button></a>
+        </form>
+    </div>
+  </div>
+</div>
+</div>
+<!-- Maybe better 2 templates more, but it's okay to make a mini-single-page-per-controller here to have more control over the forms :) -->
+<div ng-show="miniaction==1">
+  <form name="registerForm" ng-submit="registerForm.$valid"  novalidate>
+  <div class="form-group">
+  <span class="glyphicon glyphicon-flag"></span><label for="name"> Your username:</label>
+    <input name="name" class="form-control" type="text" ng-model="nameToInsert" ng-pattern="/[a-zA-Z]{3,15}/" required />
+  <div ng-show="registerForm.name.$error.pattern" class="has-error">
+    <span class="help-block ">Please, insert a valid username.</span>
+  </div>
+  <div ng-show="registerForm.name.$error.required" class="advice">
+      <span class="help-block ">Userame is required.</span>
+    </div>
+</div>
+
+<div class="form-group">
+  <span class="glyphicon glyphicon-user"></span><label for="dni"> Your DNI / NIE:</label>
+    <input name="dni" class="form-control" type="text" ng-model="dniToInsert" ng-pattern="/(([X-Z]{1})([-]?)(\d{7})([-]?)([A-Z]{1}))|((\d{8})([-]?)([A-Z]{1}))/" required />
+  <div ng-show="registerForm.dni.$error.pattern" class="has-error">
+    <span class="help-block ">Please, insert correct DNI/NIE.</span>
+  </div>
+  <div ng-show="registerForm.dni.$error.required" class="advice">
+      <span class="help-block ">DNI/NIE is required.</span>
+    </div>
+  </div>
+
+<div class="form-group">
+  <span class="glyphicon glyphicon-envelope"></span><label for="mail"> Your email </label>
+    <input name="mail" class="form-control" type="text" ng-model="emailToInsert" ng-pattern="/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/" required />
+  <div ng-show="registerForm.mail.$error.pattern" class="has-error">
+    <span class="help-block ">Please, insert correct email.</span>
+  </div>
+  <div ng-show="registerForm.mail.$error.required" class="advice">
+      <span class="help-block ">Email is required.</span>
+    </div>
+  </div>
+  <div class="form-group">
+				<button ng-click="addStudent();registerForm.$setPristine();" ng-disabled="registerForm.$invalid" class="btn btn-default btn-success btn-block">
+					Add this Student!
+				</button>
+        <button ng-click="miniaction=0;registerForm.$setPristine();" class="btn btn-default btn-danger btn-block">
+          Cancel
+        </button>
+			</div>
+    </form>
+</div>
+
+<!-- SECOND FORM -->
+<div ng-show="miniaction==2">
+  <form name="registerFormb" ng-submit="registerFormb.$valid"  novalidate>
+  <div class="form-group">
+  <span class="glyphicon glyphicon-flag"></span><label for="name"> New username for {{toChange.firstname}}:</label>
+    <input name="name" class="form-control" type="text" ng-model="nameToUpdate" ng-pattern="/[a-zA-Z]{3,15}/" required />
+  <div ng-show="registerFormb.name.$error.pattern" class="has-error">
+    <span class="help-block ">Please, insert a valid username.</span>
+  </div>
+  <div ng-show="registerFormb.name.$error.required" class="advice">
+      <span class="help-block ">Username is required.</span>
+    </div>
+</div>
+
+<div class="form-group">
+  <span class="glyphicon glyphicon-envelope"></span><label for="mail"> New email (current email: {{toChange.email}}) </label>
+    <input name="mail" class="form-control" type="text" ng-model="emailToUpdate" ng-pattern="/[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/" required />
+  <div ng-show="registerFormb.mail.$error.pattern" class="has-error">
+    <span class="help-block ">Please, insert correct email.</span>
+  </div>
+  <div ng-show="registerFormb.mail.$error.required" class="advice">
+      <span class="help-block ">Email is required.</span>
+    </div>
+  </div>
+  <div class="form-group">
+				<button ng-click="updateStudentFinally();registerFormb.$setPristine();" ng-disabled="registerFormb.$invalid" class="btn btn-default btn-success btn-block">
+					Update this student!
+				</button>
+        <button ng-click="miniaction=0;registerFormb.$setPristine();" class="btn btn-default btn-danger btn-block">
+          Cancel
+        </button>
+			</div>
+    </form>
+</div>

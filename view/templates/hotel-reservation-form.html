@@ -1,0 +1,148 @@
+<div class="container well">
+  <div class="row">
+    <div class="col-lg-10">
+      <div>
+        <h1>Games <small>you are currently in game's management page</small></h1>
+        <br>
+        <div class="row">
+          <div class="col-sm-4">
+            <!-- unnecessary ng-patterns by the way usefull for exam template :) -->
+            <label for="search">Search by DNI:</label>
+            <input ng-model="mailSearch" id="search" class="form-control"
+            placeholder="Filter text" ng-disabled="reviewsManagement.$invalid"/>
+          </div>
+          <div class="col-sm-3">
+            <label for="search">Search by name:</label>
+            <input ng-model="opinionSearch" id="search" class="form-control"
+            placeholder="Filter text" ng-disabled="reviewsManagement.$invalid"/>
+          </div>
+					<div class="col-sm-3">
+						<label for="search">Search by device:</label>
+						<input ng-model="deviceSearch" id="search" class="form-control"
+						placeholder="Filter text" ng-disabled="reviewsManagement.$invalid"/>
+					</div>
+          <div class="col-sm-2">
+            <label for="search">items per page:</label>
+            <input type="number" min="1" max="100" class="form-control"
+            ng-model="pageSize" ng-disabled="reviewsManagement.$invalid"/>
+          </div>
+        </div>
+        <br>
+        <form class="login2" name="reviewsManagement"
+        ng-submit="reviewsManagement.$valid && reviewsCtrl.sendReviews()" novalidate>
+          <div class="panel panel-default">
+            <div class="row">
+              <div class="col-sm-2">
+                <label>Current owner's DNI:</label>
+              </div>
+              <div class="col-sm-3">
+                <label for="search">Title:</label>
+              </div>
+              <div class="col-sm-3">
+                <label for="search">Platform: </label>
+              </div>
+            </div>
+            <div class="row" dir-paginate="review in filteredData | itemsPerPage: pageSize"
+                  current-page="currentPage">
+              <div class="col-sm-2">
+                <input type="text" class="form-control" id="rate{{$index}}"
+                ng-model="review.owner" readonly />
+              </div>
+              <div class="col-sm-3">
+                <input type="text" class="form-control" id="opinion{{$index}}"
+                ng-model="review.title" readonly />
+              </div>
+              <div class="col-sm-3">
+                <input type="text" class="form-control"
+                 id="email{{$index}}"
+                ng-model="review.device" readonly />
+              </div>
+              <div class="col-sm-2">
+              <a href="#bottom" type="submit" ng-click="updateGame(review)"
+                ng-disabled="miniaction==1" class="btn btn-success">
+                  Modify Owner
+                </a>
+              </div>
+              <div class="col-sm-2">
+                <button type="submit" ng-click="removeGame(review)"
+                ng-disabled="miniaction!==0" class="btn btn-danger">
+                  Remove
+                </button>
+              </div>
+            </div>
+            </div>
+          </div>
+          <div class="text-left" boundary-links="true" ng-show="reviewsManagement.$valid">
+            <dir-pagination-controls boundary-links="true"
+            template-url="view/templates/dir-pagination-controls.html" ></dir-pagination-controls>
+          </div>
+              <a href="#bottom"><button type="submit" ng-disabled="miniaction==2"
+              ng-click="reloadDNI();miniaction=1;" class="btn btn-default btn-primary btn-block">
+                Add New
+              </button></a>
+        </form>
+    </div>
+  </div>
+</div>
+</div>
+<!-- Maybe better 2 templates more, but it's okay to make a mini-single-page-per-controller here to have more control over the forms :) -->
+<div ng-show="miniaction==1">
+  <form name="registerFormGame" ng-submit="registerFormGame.$valid"  novalidate>
+  <div class="form-group">
+  <span class="glyphicon glyphicon-tag"></span><label for="name"> Title:</label>
+    <input name="name" class="form-control" type="text" ng-model="nameToInsert" ng-pattern="/[a-zA-Z]{3,15}/" required />
+  <div ng-show="registerFormGame.name.$error.pattern" class="has-error">
+    <span class="help-block ">Please, insert a valid title.</span>
+  </div>
+  <div ng-show="registerFormGame.name.$error.required" class="advice">
+      <span class="help-block ">title is required.</span>
+    </div>
+</div>
+
+<div class="form-group col-sm-4">
+  <span class="glyphicon glyphicon-user"></span><label for="dni"> New Owner DNI:</label>
+	<select ng-model="withToInsert" ng-options="item for item in dni">
+	</select>
+  </div>
+
+	<div class="form-group col-sm-4">
+	  <span class="glyphicon glyphicon-star-empty"></span><label for="dni"> Type:</label>
+		<select ng-model="typeToInsert" ng-options="item for item in types">
+		</select>
+	  </div>
+
+		<div class="form-group col-sm-4">
+		  <span class="glyphicon glyphicon-hdd"></span><label for="dni"> Platform:</label>
+			<select ng-model="deviceToInsert" ng-options="item for item in devices">
+			</select>
+		  </div>
+
+  <div class="form-group">
+				<button ng-click="addGame();registerFormGame.$setPristine();" ng-disabled="registerFormGame.$invalid" class="btn btn-default btn-success btn-block">
+					Add this game!
+				</button>
+        <button ng-click="miniaction=0;registerFormGame.$setPristine();" class="btn btn-default btn-danger btn-block">
+          Cancel
+        </button>
+			</div>
+    </form>
+</div>
+
+<!-- SECOND FORM -->
+<div ng-show="miniaction==2">
+  <form name="registerFormGameb" ng-submit="registerFormGameb.$valid"  novalidate>
+  <div class="form-group col-sm-12">
+  <span class="glyphicon glyphicon-user"></span><label for="name"> New owner DNI for {{toChange.title}}:</label>
+  	<select ng-model="withToUpdate" ng-options="item for item in dni">
+  	</select>
+    </div>
+  <div class="form-group">
+				<button ng-click="updateGameFinally();registerFormGameb.$setPristine();" ng-disabled="registerFormGameb.$invalid" class="btn btn-default btn-success btn-block">
+					Update this game!
+				</button>
+        <button ng-click="miniaction=0;registerFormGameb.$setPristine();" class="btn btn-default btn-danger btn-block">
+          Cancel
+        </button>
+			</div>
+    </form>
+</div>
